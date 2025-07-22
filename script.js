@@ -3,18 +3,18 @@ const ACTIVECOLOR = '#CCFF00';
 let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false,inactiveGrids = 256,eraserActive=false;
 
 const board = document.querySelector('.board');
+board.style.backgroundColor = backgroundColor;
 for(let i = 0;i < 256; i++) {
     const grid = document.createElement('div');
     grid.classList.add('grid','inactive');
     grid.id = 'g' + i;
-    grid.style.backgroundColor = backgroundColor;
     board.appendChild(grid);
 }
 
 const pen = document.querySelector('.pen input');
 const background = document.querySelector('.background input');
 pen.addEventListener("input", () => penColor = pen.value);
-background.addEventListener("input", changeBackground);
+background.addEventListener("input", () => (backgroundColor = background.value,board.style.backgroundColor = backgroundColor)); 
 
 const togglePenBtn = document.querySelector('.switch');
 togglePenBtn.addEventListener('click',function () {
@@ -67,20 +67,11 @@ function randomColor() {
     return '#' + hex;
 }
 
-function changeBackground() {
-    backgroundColor = background.value;
-    const grids = document.getElementsByClassName('inactive');
-    for(let i = 0;i<inactiveGrids;i++) {
-        grids[i].style.backgroundColor = backgroundColor;
-    }
-
-}
-
 function clearAll() {
     const grids = Array.from(document.getElementsByClassName('grid active'));
     for(let i = 0;i < 256-inactiveGrids; i++) {
         grids[i].classList.replace('active','inactive');
-        grids[i].style.backgroundColor = backgroundColor;
+        grids[i].style.backgroundColor = null;
     }
     inactiveGrids = 256;
 }
