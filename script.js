@@ -1,12 +1,13 @@
 const ACTIVECOLOR = '#CCFF00';
 
-let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false,inactiveGrids = 256,eraserActive=false;
+let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false,inactiveGrids = 256,eraserActive=false,shadeActive=false,fadeActive=false;
 
 const board = document.querySelector('.board');
 for(let i = 0;i < 256; i++) {
     const grid = document.createElement('div');
     grid.classList.add('grid','inactive');
     grid.id = 'g' + i;
+    grid.style.opacity = 0.5;
     board.appendChild(grid);
 }
 
@@ -36,27 +37,34 @@ eraser.addEventListener('click', function() {
 } )
 
 board.addEventListener("mouseover", function (event) {
-    if(eraserActive) {
-        if(event.target.classList.contains('active')) {
-            inactiveGrids++;
-            event.target.classList.replace('active','inactive');
-        }
-        if(!event.target.classList.contains('board'))
+    if(!event.target.classList.contains('board')) {
+        if(eraserActive) {
+            if(event.target.classList.contains('active')) {
+                inactiveGrids++;
+                event.target.classList.replace('active','inactive');
+            }
             event.target.style.backgroundColor = '';
+            event.target.style.opacity = 0.5;
 
-    }
-    else if(penActive) {
-        if(event.target.classList.contains('inactive')) {
-            inactiveGrids--;
-            event.target.classList.replace('inactive','active');
         }
+        else if(penActive) {
+            if(event.target.classList.contains('inactive')) {
+                inactiveGrids--;
+                event.target.classList.replace('inactive','active');
+            }
 
-        if(rainbowMode) {
-            pen.value = randomColor();
-            penColor = pen.value;
-        }
-        if(!event.target.classList.contains('board'))
+            if(rainbowMode) {
+                pen.value = randomColor();
+                penColor = pen.value;
+            }
             event.target.style.backgroundColor = penColor;
+        }
+        if(shadeActive || fadeActive) {
+            if(shadeActive)
+                event.target.style.opacity = (event.target.style.opacity*10 + 1)/10;  
+            if(fadeActive)
+                event.target.style.opacity = (event.target.style.opacity*10 - 1)/10;           
+        }
     }
 })
 
@@ -77,8 +85,21 @@ function clearAll() {
     for(let i = 0;i < 256-inactiveGrids; i++) {
         grids[i].classList.replace('active','inactive');
         grids[i].style.backgroundColor = '';
+        grids[i].style.opacity = 0.5;
     }
     inactiveGrids = 256;
 }
 
 document.querySelector('.clear').addEventListener('click',clearAll);
+
+const shade = document.querySelector('.shade');
+shade.addEventListener('click',function() {
+    shadeActive = !shadeActive;
+    shadeActive ? shade.style.backgroundColor = ACTIVECOLOR : shade.style.backgroundColor = null;
+})
+
+const fade = document.querySelector('.fade');
+fade.addEventListener('click',function() {
+    fadeActive = !fadeActive;
+    fadeActive ? fade.style.backgroundColor = ACTIVECOLOR : fade.style.backgroundColor = null;
+})
