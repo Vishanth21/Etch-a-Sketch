@@ -53,7 +53,6 @@ const pen = document.querySelector('.pen input');
 const background = document.querySelector('.background input');
 pen.addEventListener("input", () => penColor = pen.value);
 background.addEventListener("input", changeBackground);
-changeBackground();
 
 const togglePenBtn = document.querySelector('.switch');
 togglePenBtn.addEventListener('click',function () {
