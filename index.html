@@ -6,6 +6,7 @@
     <title>Etch-a-Sketch</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <script src="jscolor.js"></script>
 
 </head>
 <body>
@@ -15,8 +16,15 @@
             <div class="control-title">Control Panel</div>
             <div class="color-pallete">Color Pallete:
                 <div class="current-colors">
-                <div class="background"></div>
-                <div class="pen"></div>
+                <div class="background">
+                    Background:
+                    <input data-jscolor="{value:'#FFFFFF'}">
+                </div>
+                <div class="pen">
+                    Pen: 
+                    <input class="pen" data-jscolor="{value:'#ffa200ff'}">
+                </div>
+                
             </div>
             </div>
             <div class="controls">

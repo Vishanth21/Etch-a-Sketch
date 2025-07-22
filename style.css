@@ -20,7 +20,7 @@ body {
     width: 500px;
     display: flex;
     flex-wrap: wrap;
-    border: 2px solid black;
+    border: 2px solid dimgrey;
 
     
 }
@@ -29,6 +29,6 @@ body {
     height: 6.25%;
     width: 6.25%;
     box-sizing: border-box;
-    border: 1px solid black;
+    border: 1px solid dimgrey;
 
 }
