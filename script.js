@@ -7,7 +7,6 @@ for(let i = 0;i < 256; i++) {
     const grid = document.createElement('div');
     grid.classList.add('grid','inactive');
     grid.id = 'g' + i;
-    grid.style.backgroundColor = backgroundColor;
     board.appendChild(grid);
 }
 
@@ -15,6 +14,7 @@ const pen = document.querySelector('.pen input');
 const background = document.querySelector('.background input');
 pen.addEventListener("input", () => penColor = pen.value);
 background.addEventListener("input", changeBackground);
+changeBackground();
 
 const togglePenBtn = document.querySelector('.switch');
 togglePenBtn.addEventListener('click',function () {
@@ -41,7 +41,8 @@ board.addEventListener("mouseover", function (event) {
             inactiveGrids++;
             event.target.classList.replace('active','inactive');
         }
-        event.target.style.backgroundColor = backgroundColor;
+        if(!event.target.classList.contains('board'))
+            event.target.style.backgroundColor = '';
 
     }
     else if(penActive) {
@@ -54,10 +55,9 @@ board.addEventListener("mouseover", function (event) {
             pen.value = randomColor();
             penColor = pen.value;
         }
-        event.target.style.backgroundColor = penColor;
-        
+        if(!event.target.classList.contains('board'))
+            event.target.style.backgroundColor = penColor;
     }
-    
 })
 
 function randomColor() {
@@ -69,18 +69,14 @@ function randomColor() {
 
 function changeBackground() {
     backgroundColor = background.value;
-    const grids = document.getElementsByClassName('inactive');
-    for(let i = 0;i<inactiveGrids;i++) {
-        grids[i].style.backgroundColor = backgroundColor;
+    board.style.backgroundColor = backgroundColor;
     }
-
-}
 
 function clearAll() {
     const grids = Array.from(document.getElementsByClassName('grid active'));
     for(let i = 0;i < 256-inactiveGrids; i++) {
         grids[i].classList.replace('active','inactive');
-        grids[i].style.backgroundColor = backgroundColor;
+        grids[i].style.backgroundColor = '';
     }
     inactiveGrids = 256;
 }
