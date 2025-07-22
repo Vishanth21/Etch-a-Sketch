@@ -1,11 +1,11 @@
-ACTIVECOLOR = '#CCFF00';
+const ACTIVECOLOR = '#CCFF00';
 
-let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false;
+let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false,inactiveGrids = 256,eraserActive=false;
 
 const board = document.querySelector('.board');
 for(let i = 0;i < 256; i++) {
     const grid = document.createElement('div');
-    grid.className = 'grid';
+    grid.classList.add('grid','inactive');
     grid.id = 'g' + i;
     grid.style.backgroundColor = backgroundColor;
     board.appendChild(grid);
@@ -13,9 +13,8 @@ for(let i = 0;i < 256; i++) {
 
 const pen = document.querySelector('.pen input');
 const background = document.querySelector('.background input');
-
 pen.addEventListener("input", () => penColor = pen.value);
-background.addEventListener("input", () => backgroundColor = background.value);
+background.addEventListener("input", changeBackground);
 
 const togglePenBtn = document.querySelector('.switch');
 togglePenBtn.addEventListener('click',function () {
@@ -30,14 +29,33 @@ rainbowModeBtn.addEventListener('click', function () {
 
 })
 
+const eraser = document.querySelector('.eraser');
+eraser.addEventListener('click', function() {
+    eraserActive = !eraserActive;
+    eraserActive ? eraser.style.backgroundColor = ACTIVECOLOR : eraser.style.backgroundColor = null;
+} )
+
 board.addEventListener("mouseover", function (event) {
-    if(penActive) {
+    if(eraserActive) {
+        if(event.target.classList.contains('active')) {
+            inactiveGrids++;
+            event.target.classList.replace('active','inactive');
+        }
+        event.target.style.backgroundColor = backgroundColor;
+
+    }
+    else if(penActive) {
+        if(event.target.classList.contains('inactive')) {
+            inactiveGrids--;
+            event.target.classList.replace('inactive','active');
+        }
+
         if(rainbowMode) {
             pen.value = randomColor();
             penColor = pen.value;
-            pen.setAttribute('data-current-color',penColor);
         }
         event.target.style.backgroundColor = penColor;
+        
     }
     
 })
@@ -48,3 +66,23 @@ function randomColor() {
     hex = hex.padStart(6,'0');
     return '#' + hex;
 }
+
+function changeBackground() {
+    backgroundColor = background.value;
+    const grids = document.getElementsByClassName('inactive');
+    for(let i = 0;i<inactiveGrids;i++) {
+        grids[i].style.backgroundColor = backgroundColor;
+    }
+
+}
+
+function clearAll() {
+    const grids = Array.from(document.getElementsByClassName('grid active'));
+    for(let i = 0;i < 256-inactiveGrids; i++) {
+        grids[i].classList.replace('active','inactive');
+        grids[i].style.backgroundColor = backgroundColor;
+    }
+    inactiveGrids = 256;
+}
+
+document.querySelector('.clear').addEventListener('click',clearAll);
