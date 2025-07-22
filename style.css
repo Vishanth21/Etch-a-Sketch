@@ -9,15 +9,15 @@ body {
 .playground {
     display: flex;
     align-items: center;
-    padding: 20px;
-    gap: 20px;
+    padding: 50px;
+    gap: 50px;
     
     
 }
 
 .board {
-    height: 500px;
-    width: 500px;
+    height: 800px;
+    width: 800px;
     display: flex;
     flex-wrap: wrap;
     border: 2px solid dimgrey;

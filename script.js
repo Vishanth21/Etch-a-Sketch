@@ -1,15 +1,52 @@
 const ACTIVECOLOR = '#CCFF00';
-
-let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false,inactiveGrids = 256,eraserActive=false,shadeActive=false,fadeActive=false;
+const SMALL = 16;
+const MEDIUM = 32;
+const LARGE = 64;
+let penColor = '#ffa200ff',backgroundColor = '#FFFFFF',inactiveGrids = SMALL**2,gridSize = SMALL;
+let penActive = false, rainbowMode = false,eraserActive=false,shadeActive=false,fadeActive=false,sizeBtn = false;
+const size = document.querySelector('.grid-size');
+document.querySelector('.small').style.backgroundColor = ACTIVECOLOR;
+size.addEventListener('click',function(event) {
+    switch(event.target.className) {
+        case 'small':
+            gridSize = SMALL;
+            event.target.style.backgroundColor = ACTIVECOLOR;
+            document.querySelector('.medium').style.backgroundColor = '';
+            document.querySelector('.large').style.backgroundColor = '';
+            break;
+        case 'medium':
+            gridSize = MEDIUM;
+            event.target.style.backgroundColor = ACTIVECOLOR;
+            document.querySelector('.small').style.backgroundColor = '';
+            document.querySelector('.large').style.backgroundColor = '';
+            break;
+        case 'large':
+            gridSize = LARGE;
+            event.target.style.backgroundColor = ACTIVECOLOR;
+            document.querySelector('.medium').style.backgroundColor = '';
+            document.querySelector('.small').style.backgroundColor = '';
+            break;
+    }
+    inactiveGrids = gridSize ** 2;
+    buildGrid();
+})
 
 const board = document.querySelector('.board');
 board.style.backgroundColor = backgroundColor;
-for(let i = 0;i < 256; i++) {
-    const grid = document.createElement('div');
-    grid.classList.add('grid','inactive');
-    grid.id = 'g' + i;
-    grid.style.opacity = 0.5;
-    board.appendChild(grid);
+buildGrid();
+function buildGrid() {
+    while(board.firstChild) {
+        board.removeChild(board.lastChild);
+    }
+    for(let i = 0;i < inactiveGrids; i++) {
+        const grid = document.createElement('div');
+        grid.classList.add('grid','inactive');
+        grid.id = 'g' + i;
+        grid.style.opacity = 0.5;
+        grid.style.width = `${100/gridSize}%`;
+        grid.style.height = grid.style.width;
+        board.appendChild(grid);
+    }
 }
 
 const pen = document.querySelector('.pen input');
@@ -83,12 +120,12 @@ function changeBackground() {
 
 function clearAll() {
     const grids = Array.from(document.getElementsByClassName('grid active'));
-    for(let i = 0;i < 256-inactiveGrids; i++) {
+    for(let i = 0;i < gridSize**2-inactiveGrids; i++) {
         grids[i].classList.replace('active','inactive');
         grids[i].style.backgroundColor = '';
         grids[i].style.opacity = 0.5;
     }
-    inactiveGrids = 256;
+    inactiveGrids = gridSize**2;
 }
 
 document.querySelector('.clear').addEventListener('click',clearAll);
