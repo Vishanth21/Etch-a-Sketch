@@ -1,6 +1,6 @@
 ACTIVECOLOR = '#CCFF00';
 
-let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false;
+let penColor = '#ffa200ff',backgroundColor = '#FFFFFF', penActive = false, rainbowMode = false;
 
 const board = document.querySelector('.board');
 for(let i = 0;i < 256; i++) {
@@ -17,15 +17,34 @@ const background = document.querySelector('.background input');
 pen.addEventListener("input", () => penColor = pen.value);
 background.addEventListener("input", () => backgroundColor = background.value);
 
-const togglePen = document.querySelector('.switch');
-togglePen.addEventListener('click',function () {
+const togglePenBtn = document.querySelector('.switch');
+togglePenBtn.addEventListener('click',function () {
     penActive = !penActive;
-    penActive ? togglePen.style.backgroundColor = ACTIVECOLOR : togglePen.style.backgroundColor = null;
+    penActive ? togglePenBtn.style.backgroundColor = ACTIVECOLOR : togglePenBtn.style.backgroundColor = null;
+})
+
+const rainbowModeBtn = document.querySelector('.rainbow')
+rainbowModeBtn.addEventListener('click', function () {
+    rainbowMode = !rainbowMode;
+    rainbowMode ? rainbowModeBtn.style.backgroundColor = ACTIVECOLOR : rainbowModeBtn.style.backgroundColor = null;
+
 })
 
 board.addEventListener("mouseover", function (event) {
     if(penActive) {
-    event.target.style.backgroundColor = penColor;
+        if(rainbowMode) {
+            pen.value = randomColor();
+            penColor = pen.value;
+            pen.setAttribute('data-current-color',penColor);
+        }
+        event.target.style.backgroundColor = penColor;
     }
     
 })
+
+function randomColor() {
+    let hex = Math.floor(Math.random() * 16777215);
+    hex = hex.toString(16);
+    hex = hex.padStart(6,'0');
+    return '#' + hex;
+}
