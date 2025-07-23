@@ -3,7 +3,7 @@ const SMALL = 16;
 const MEDIUM = 32;
 const LARGE = 64;
 let penColor = '#ffa200ff',backgroundColor = '#FFFFFF',inactiveGrids = SMALL**2,gridSize = SMALL;
-let penActive = false, rainbowMode = false,eraserActive=false,shadeActive=false,fadeActive=false,sizeBtn = false;
+let penActive = false, rainbowMode = false,eraserActive=false,shadeActive=false,fadeActive=false,sizeBtn = false,mouseActive = false;
 const size = document.querySelector('.grid-size');
 document.querySelector('.small').style.backgroundColor = ACTIVECOLOR;
 size.addEventListener('click',function(event) {
@@ -67,14 +67,38 @@ rainbowModeBtn.addEventListener('click', function () {
 
 })
 
+const shade = document.querySelector('.shade');
+const fade = document.querySelector('.fade');
+
+shade.addEventListener('click',function() {
+    fadeActive = false;
+    fade.style.backgroundColor = '';
+    shadeActive = !shadeActive;
+    shadeActive ? shade.style.backgroundColor = ACTIVECOLOR : shade.style.backgroundColor = null;
+})
+
+fade.addEventListener('click',function() {
+    shadeActive = false;
+    shade.style.backgroundColor = '';
+    fadeActive = !fadeActive;
+    fadeActive ? fade.style.backgroundColor = ACTIVECOLOR : fade.style.backgroundColor = null;
+})
+
 const eraser = document.querySelector('.eraser');
 eraser.addEventListener('click', function() {
     eraserActive = !eraserActive;
+    shadeActive = false;
+    fadeActive =   false;
+    shade.style.backgroundColor = '';
+    fade.style.backgroundColor = '';
     eraserActive ? eraser.style.backgroundColor = ACTIVECOLOR : eraser.style.backgroundColor = null;
 } )
 
-board.addEventListener("mouseover", function (event) {
-    if(!event.target.classList.contains('board')) {
+board.addEventListener("mousedown",() => mouseActive = true);
+board.addEventListener("mouseup",() => mouseActive = false);
+
+board.addEventListener("mousemove", function (event) {
+    if(!event.target.classList.contains('board')  && mouseActive) {
         if(eraserActive) {
             if(event.target.classList.contains('active')) {
                 inactiveGrids++;
@@ -84,11 +108,9 @@ board.addEventListener("mouseover", function (event) {
             event.target.style.opacity = 0.5;
 
         }
-        else if(penActive) {
-            if(event.target.classList.contains('inactive')) {
+        else if(penActive && event.target.classList.contains('inactive')) {
                 inactiveGrids--;
                 event.target.classList.replace('inactive','active');
-            }
 
             if(rainbowMode) {
                 pen.value = randomColor();
@@ -98,9 +120,9 @@ board.addEventListener("mouseover", function (event) {
         }
         if(shadeActive || fadeActive) {
             if(shadeActive)
-                event.target.style.opacity = (event.target.style.opacity*10 + 1)/10;  
+                event.target.style.opacity = (event.target.style.opacity*100 + 1)/100;  
             if(fadeActive)
-                event.target.style.opacity = (event.target.style.opacity*10 - 1)/10;           
+                event.target.style.opacity = (event.target.style.opacity*100 - 1)/100;           
         }
     }
 })
@@ -109,7 +131,7 @@ function randomColor() {
     let hex = Math.floor(Math.random() * 16777215);
     hex = hex.toString(16);
     hex = hex.padStart(6,'0');
-    return '#' + hex;
+    return '#' + hex.toUpperCase();
 }
 
 function changeBackground() {
@@ -128,15 +150,3 @@ function clearAll() {
 }
 
 document.querySelector('.clear').addEventListener('click',clearAll);
-
-const shade = document.querySelector('.shade');
-shade.addEventListener('click',function() {
-    shadeActive = !shadeActive;
-    shadeActive ? shade.style.backgroundColor = ACTIVECOLOR : shade.style.backgroundColor = null;
-})
-
-const fade = document.querySelector('.fade');
-fade.addEventListener('click',function() {
-    fadeActive = !fadeActive;
-    fadeActive ? fade.style.backgroundColor = ACTIVECOLOR : fade.style.backgroundColor = null;
-})
